@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Aura Monster Subaru</title>
+<style>
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
+  }
+
+  /* Image and video both fill the whole screen on any device.
+     "cover" fills without distortion (crops edges if needed).
+     Change to "fill" if you want it stretched exactly to the screen. */
+  #idle, #video {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+  }
+
+  #video { opacity: 0; }
+  body.holding #video { opacity: 1; }
+  body.holding #idle { opacity: 0; }
+</style>
+</head>
+<body>
+
+<!-- Put these three files in the same folder as this HTML file -->
+<img id="idle" src="idle.webp" alt="">
+<video id="video" src="video.mp4" muted loop playsinline preload="auto"></video>
+<audio id="music" src="music.mp3" loop preload="auto"></audio>
+
+<script>
+  const video = document.getElementById('video');
+  const music = document.getElementById('music');
+  let holding = false;
+
+  function start() {
+    if (holding) return;
+    holding = true;
+    document.body.classList.add('holding');
+    video.play().catch(() => {});
+    music.play().catch(() => {});
+  }
+
+  function stop() {
+    if (!holding) return;
+    holding = false;
+    document.body.classList.remove('holding');
+    video.pause();
+    video.currentTime = 0;
+    music.pause();
+    music.currentTime = 0;
+  }
+
+  window.addEventListener('pointerdown', start);
+  window.addEventListener('pointerup', stop);
+  window.addEventListener('pointercancel', stop);
+  window.addEventListener('blur', stop);
+
+  // Stops the long-press menu on phones
+  window.addEventListener('contextmenu', e => e.preventDefault());
+</script>
+
+</body>
+</html>
